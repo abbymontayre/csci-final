@@ -11,12 +11,14 @@ class Player extends MyObj{
         x += dx;
         y += dy;
 
-        if (!map.inTheMap(this)){
-            // If the player is out of bounds, revert to old position
+        if (!map.inTheMap(this)) {
+            System.out.println("Move blocked by map bounds.");
             x = OldX;
             y = OldY;
+        } else {
+            System.out.println("Moved to: " + x + ", " + y);
         }
-
     }
+
 
 }

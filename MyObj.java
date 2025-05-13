@@ -41,6 +41,15 @@ abstract class MyObj {
         return y+height;
     }
 
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+
     /**
      * (x,y) is the top left corner of the object
      * (a,b) is the bottom right corner of the object
