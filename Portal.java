@@ -21,16 +21,14 @@ public class Portal extends MyObj {
 
         for (Player p : players) {
             if (this.collisionTester(p)) {
-                int newX = destination.getX() + destination.getWidth() + 5;
+                int newX = destination.getX();
                 int newY = destination.getY();
 
-                // Temporarily set to check if valid
                 p.setX(newX);
                 p.setY(newY);
 
                 if (!map.inTheMap(p)) {
                     System.out.println("Teleport location out of bounds. Reverting.");
-                    // Set fallback location
                     p.setX(150);
                     p.setY(150);
                 } else {
@@ -39,5 +37,4 @@ public class Portal extends MyObj {
             }
         }
     }
-
 }
