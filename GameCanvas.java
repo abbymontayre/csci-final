@@ -15,15 +15,15 @@ public class GameCanvas extends JPanel {
 
         map = new Map();
 
-        this.Player1 = new Player(96, 96, 32, 32); 
-        this.Player2 = new Player(896, 608, 32, 32);
+        this.Player1 = new Player(96, 96, 32, 32, "assets/player1.png"); 
+        this.Player2 = new Player(896, 608, 32, 32, "assets/player2.png");
 
-        this.portal1 = new Portal(350, 172, 32, 32); 
-        this.portal2 = new Portal(110, 600, 32, 32);
+        // this.portal1 = new Portal(350, 172, 32, 32); 
+        // this.portal2 = new Portal(110, 600, 32, 32);
         
-        portal1.addPlayer(Player1);
-        portal1.addPlayer(Player2);
-        portal1.setDestination(portal2);
+        // portal1.addPlayer(Player1);
+        // portal1.addPlayer(Player2);
+        // portal1.setDestination(portal2);
     }
 
     @Override
@@ -32,13 +32,11 @@ public class GameCanvas extends JPanel {
 
         map.draw(g);
 
-        g.setColor(Color.GREEN);
-        portal1.draw(g);
-        portal2.draw(g);
+        // g.setColor(Color.GREEN);
+        // portal1.draw(g);
+        // portal2.draw(g);
 
-        g.setColor(Color.BLUE);
         Player1.draw(g);
-        g.setColor(Color.YELLOW);
         Player2.draw(g);
     }
 }
