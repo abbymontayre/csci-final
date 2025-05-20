@@ -1,5 +1,9 @@
 import javax.swing.*;
+<<<<<<< HEAD
 import java.awt.*;
+=======
+
+>>>>>>> f085cc853d2564ab7a6872b20a2beaf341a61f7a
 
 public class GameFrame {
     private GameCanvas gameCanvas;

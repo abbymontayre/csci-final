@@ -93,6 +93,7 @@ public class GameServer {
                     if(playerID == 1) {
                         P1x = in.readDouble();
                         P1y = in.readDouble();
+<<<<<<< HEAD
                         P1facingLeft = in.readBoolean();
                         P1inPortal = in.readBoolean();
                     } else {
@@ -100,12 +101,18 @@ public class GameServer {
                         P2y = in.readDouble();
                         P2facingLeft = in.readBoolean();
                         P2inPortal = in.readBoolean();
+=======
+                    } else {
+                        P2x = in.readDouble();
+                        P2y = in.readDouble();
+>>>>>>> f085cc853d2564ab7a6872b20a2beaf341a61f7a
                     }
                 }
             } catch (Exception e) {
                 System.out.println("IOException: from ReadFromClient run()");
             }
         }
+<<<<<<< HEAD
     }
 
     private class WriteToClient implements Runnable {
@@ -118,6 +125,19 @@ public class GameServer {
             System.out.println("WTC created for player #: " + playerID);
             
         }
+=======
+}
+private class WriteToClient implements Runnable {
+    private int playerID;
+    private DataOutputStream out;
+
+    public WriteToClient(int playerID, DataOutputStream out) {
+        this.playerID = playerID;
+        this.out = out;
+        System.out.println("WTC created for player #: " + playerID);
+        
+    }
+>>>>>>> f085cc853d2564ab7a6872b20a2beaf341a61f7a
         @Override
         public void run() {
             try {
@@ -125,14 +145,20 @@ public class GameServer {
                     if(playerID == 1) {
                         out.writeDouble(P2x);
                         out.writeDouble(P2y);
+<<<<<<< HEAD
                         out.writeBoolean(P2facingLeft);
                         out.writeBoolean(P2inPortal);
+=======
+>>>>>>> f085cc853d2564ab7a6872b20a2beaf341a61f7a
                         out.flush();
                     } else {
                         out.writeDouble(P1x);
                         out.writeDouble(P1y);
+<<<<<<< HEAD
                         out.writeBoolean(P1facingLeft);
                         out.writeBoolean(P1inPortal);
+=======
+>>>>>>> f085cc853d2564ab7a6872b20a2beaf341a61f7a
                         out.flush();
                     }
                     try {
@@ -152,9 +178,14 @@ public class GameServer {
             } catch (IOException e) {
                 System.out.println("IOException: from sendStartMsg");
             }
+<<<<<<< HEAD
         }
     }
 
+=======
+    }
+}
+>>>>>>> f085cc853d2564ab7a6872b20a2beaf341a61f7a
     public static void main(String[] args) {
         GameServer gs = new GameServer();
         gs.acceptConnections();

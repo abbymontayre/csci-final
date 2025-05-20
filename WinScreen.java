@@ -33,7 +33,7 @@ public class WinScreen extends JComponent {
 
         this.title = "Victory: The Path Has Cleared";
         this.subtitle = "You have made it out.";
-        this.content = "Through cryptic riddles, mysterious portals, and whispered clues, you and your partner have escaped the depths of the Ghastly Meadows. Your patience, timing, and teamwork brought light to the silence and meaning to the madness.";
+        this.content = "Through cryptic riddles, shifting statues, and whispered clues, you and your partner have escaped the depths of the Ghastly Meadows. Your patience, timing, and teamwork brought light to the silence and meaning to the madness.";
         this.endLine = "But was this the end of the cave... or just the beginning?";
         
         this.bounds = new Rectangle(x, y, screenWidth, screenHeight);
