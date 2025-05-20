@@ -9,6 +9,8 @@ public class GameServer {
     private ReadFromClient P1ReadRunnable, P2ReadRunnable;
     private WriteToClient P1WriteRunnable, P2WriteRunnable; 
     private double P1x, P1y, P2x, P2y;
+    private boolean P1facingLeft, P2facingLeft;
+    private boolean P1inPortal, P2inPortal;
 
     public GameServer() {
         System.out.println("Game Server");
@@ -18,6 +20,8 @@ public class GameServer {
         P1y = 100;
         P2x = 600;
         P2y = 100;
+        P1facingLeft = false;
+        P2facingLeft = false;
 
         try {
             ss = new ServerSocket(8700);
@@ -89,26 +93,31 @@ public class GameServer {
                     if(playerID == 1) {
                         P1x = in.readDouble();
                         P1y = in.readDouble();
+                        P1facingLeft = in.readBoolean();
+                        P1inPortal = in.readBoolean();
                     } else {
                         P2x = in.readDouble();
                         P2y = in.readDouble();
+                        P2facingLeft = in.readBoolean();
+                        P2inPortal = in.readBoolean();
                     }
                 }
             } catch (Exception e) {
                 System.out.println("IOException: from ReadFromClient run()");
             }
         }
-}
-private class WriteToClient implements Runnable {
-    private int playerID;
-    private DataOutputStream out;
-
-    public WriteToClient(int playerID, DataOutputStream out) {
-        this.playerID = playerID;
-        this.out = out;
-        System.out.println("WTC created for player #: " + playerID);
-        
     }
+
+    private class WriteToClient implements Runnable {
+        private int playerID;
+        private DataOutputStream out;
+
+        public WriteToClient(int playerID, DataOutputStream out) {
+            this.playerID = playerID;
+            this.out = out;
+            System.out.println("WTC created for player #: " + playerID);
+            
+        }
         @Override
         public void run() {
             try {
@@ -116,10 +125,14 @@ private class WriteToClient implements Runnable {
                     if(playerID == 1) {
                         out.writeDouble(P2x);
                         out.writeDouble(P2y);
+                        out.writeBoolean(P2facingLeft);
+                        out.writeBoolean(P2inPortal);
                         out.flush();
                     } else {
                         out.writeDouble(P1x);
                         out.writeDouble(P1y);
+                        out.writeBoolean(P1facingLeft);
+                        out.writeBoolean(P1inPortal);
                         out.flush();
                     }
                     try {
@@ -139,8 +152,9 @@ private class WriteToClient implements Runnable {
             } catch (IOException e) {
                 System.out.println("IOException: from sendStartMsg");
             }
+        }
     }
-}
+
     public static void main(String[] args) {
         GameServer gs = new GameServer();
         gs.acceptConnections();

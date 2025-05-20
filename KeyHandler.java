@@ -5,6 +5,8 @@ public class KeyHandler {
     private InputMap inputMap;
     private ActionMap actionMap;
     private  boolean moveUp, moveDown, moveLeft, moveRight;
+    private boolean interactPressed = false;
+    private boolean closeDialog = false;
 
     public KeyHandler(JComponent cp) {
         actionMap = cp.getActionMap();
@@ -13,6 +15,8 @@ public class KeyHandler {
         moveDown = false;
         moveLeft = false;
         moveRight = false;
+        interactPressed = false;
+        closeDialog = false;
     }
 
     AbstractAction UpMove = new AbstractAction() {
@@ -69,7 +73,21 @@ public class KeyHandler {
         public void actionPerformed(ActionEvent e) {
             moveRight = false;
         }
-    }; 
+    };
+
+    AbstractAction InteractPress = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            interactPressed = true;
+        }
+    };
+
+    AbstractAction CloseDialogPress = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            closeDialog = true;
+        }
+    };
 
     public boolean isMoveUp() {
         return moveUp;
@@ -82,6 +100,18 @@ public class KeyHandler {
     }
     public boolean isMoveRight() {
         return moveRight;
+    }
+
+    public boolean isInteracting() {
+        boolean result = interactPressed;
+        interactPressed = false;
+        return result;
+    }
+
+    public boolean shouldCloseDialog() {
+        boolean result = closeDialog;
+        closeDialog = false;
+        return result;
     }
 
     public void addKeyBinds() {
@@ -97,16 +127,24 @@ public class KeyHandler {
         actionMap.put("LeftRelease", LeftRelease);
         actionMap.put("RightRelease", RightRelease);
 
-        // Press key bindings
+        // Movement Press key bindings
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0, false), "UpMove");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0, false), "DownMove");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, false), "LeftMove");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, false), "RightMove");
         
-        // Release key bindings
+        // Movement Release key bindings
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0, true), "UpRelease");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0, true), "DownRelease");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0, true), "LeftRelease");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, true), "RightRelease");
+
+        // Interact key bindings
+        actionMap.put("InteractPress", InteractPress);
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0, false), "InteractPress");
+
+        // Close dialog key binding
+        actionMap.put("CloseDialogPress", CloseDialogPress);
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false), "CloseDialogPress");
     }
 }

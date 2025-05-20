@@ -9,13 +9,13 @@ public class GameFrame {
     public GameFrame() {
         frame = new JFrame();
         // Show IP input dialog before creating game canvas
-        serverIP = showIPInputDialog();
+        serverIP = askForIPAddress();
         if (serverIP != null) {  // Only create canvas if IP was provided
             gameCanvas = new GameCanvas(serverIP);
         }
     }
     
-    private String showIPInputDialog() {
+    private String askForIPAddress() {
         JTextField ipField = new JTextField("localhost", 15);
         JPanel panel = new JPanel();
         panel.add(new JLabel("Enter Server IP:"));
@@ -29,7 +29,7 @@ public class GameFrame {
             if (ip.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "IP address cannot be empty!", 
                     "Error", JOptionPane.ERROR_MESSAGE);
-                return showIPInputDialog();  // Show dialog again
+                return askForIPAddress();  // Show dialog again
             }
             return ip;
         } else {
