@@ -10,6 +10,8 @@ public class GameCanvas extends JComponent {
     private int playerID;
     private Player currentPlayer;
     private Player otherPlayer;
+    private boolean haveWon;
+    private WinScreen winScreen = new WinScreen();
     
     // Networking components
     private Socket socket;
@@ -17,6 +19,8 @@ public class GameCanvas extends JComponent {
     private WriteToServer wtsRunnable;
 
     public GameCanvas() {
+        haveWon = false;
+
         this.setPreferredSize(new Dimension(Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
         entities = new ArrayList<>();
         setFocusable(true);
@@ -32,6 +36,8 @@ public class GameCanvas extends JComponent {
             repaint();
         });
         timer.start();
+
+        this.add(winScreen);
     }
     
     private void connectToServer() {
@@ -164,6 +170,12 @@ public class GameCanvas extends JComponent {
         g2d.fillRect(0, 0, Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT);
         for (Entity entity : entities) {
             entity.draw(g2d);
+        }
+
+        if (haveWon) {
+            // When player wins
+            winScreen.setVisible(true); // You need to add this setter in WinScreen
+            winScreen.render(g2d);
         }
     }
 }
