@@ -15,8 +15,10 @@ public class GameCanvas extends JComponent {
     private Socket socket;
     private ReadFromServer rfsRunnable;
     private WriteToServer wtsRunnable;
+    private String serverIP;
 
-    public GameCanvas() {
+    public GameCanvas(String serverIP) {
+        this.serverIP = serverIP;
         this.setPreferredSize(new Dimension(Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
         entities = new ArrayList<>();
         setFocusable(true);
@@ -36,7 +38,8 @@ public class GameCanvas extends JComponent {
     
     private void connectToServer() {
         try {
-            socket = new Socket("localhost", Constants.GAME_SETTINGS.PORT);
+            System.out.println("Attempting to connect to server at: " + serverIP);
+            socket = new Socket(serverIP, Constants.GAME_SETTINGS.PORT);
             DataInputStream in = new DataInputStream(socket.getInputStream());
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
             playerID = in.readInt();
@@ -50,7 +53,12 @@ public class GameCanvas extends JComponent {
             wtsRunnable = new WriteToServer(out);
             rfsRunnable.waitForStartMsg();
         } catch (IOException e) {
-            System.out.println("IOException: from connectToServer");
+            System.out.println("Failed to connect to server at " + serverIP + ": " + e.getMessage());
+            JOptionPane.showMessageDialog(null, 
+                "Failed to connect to server at " + serverIP + "\nPlease check if the server is running and try again.", 
+                "Connection Error", 
+                JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
         }
     }
     
@@ -160,7 +168,7 @@ public class GameCanvas extends JComponent {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.setColor(new Color(135, 177, 209));
+        g2d.setColor(new Color(255, 255, 255));
         g2d.fillRect(0, 0, Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT);
         for (Entity entity : entities) {
             entity.draw(g2d);

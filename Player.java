@@ -1,4 +1,5 @@
 import java.awt.*;
+import javax.swing.ImageIcon;
 
 public class Player extends Entity {
     private int speed;
@@ -16,9 +17,10 @@ public class Player extends Entity {
     }
 
     public void draw(Graphics2D g2d) {
-        Color color = playerID == 1 ? Color.RED : Color.BLUE;
-        g2d.setColor(color);
-        g2d.fillRect((int)x, (int)y, width, height);
+
+        ImageIcon icon = playerID == 1 ? new ImageIcon("player_sprite.png") : new ImageIcon("player_sprite2.png");
+        Image image = icon.getImage();
+        g2d.drawImage(image, (int)x, (int)y, width, height, null);
     }
 
     @Override
