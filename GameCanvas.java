@@ -11,6 +11,8 @@ public class GameCanvas extends JComponent {
     private int playerID;
     private Player currentPlayer;
     private Player otherPlayer;
+    private boolean haveWon;
+    private WinScreen winScreen = new WinScreen();
     private String filePath;
 
     
@@ -30,6 +32,7 @@ public class GameCanvas extends JComponent {
     public GameCanvas(String serverIP) {
         this.serverIP = serverIP;
         filePath = "bgMusic.wav";
+        haveWon = false;
         this.setPreferredSize(new Dimension(Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
         entities = new ArrayList<>();
         levelManager = new LevelManager();
@@ -47,6 +50,8 @@ public class GameCanvas extends JComponent {
             repaint();
         });
         timer.start();
+
+        this.add(winScreen);
     }
 
     /***
@@ -137,7 +142,7 @@ public class GameCanvas extends JComponent {
             // Level 3
             ArrayList<GuideItem> g3 = new ArrayList<>();
             g3.add(new GuideItem(300, 300, "Mysterious Encyclopedia", "Work together to escape.", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
-            g3.add(new GuideItem(300, 300, "Mysterious Encyclopedia", "Work together to escape.", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
+            g3.add(new GuideItem(300, 300, "Confusing Code", "Work together to escape.", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
             g3.add(new GuideItem(300, 300, "Mysterious Encyclopedia", "Work together to escape.", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
             guideItemsPerLevel.add(g1);
             guideItemsPerLevel.add(g2);
@@ -211,6 +216,7 @@ public class GameCanvas extends JComponent {
                 } else {
                     // Game finished, maybe show a message or reset
                     levelManager.reset();
+                    haveWon = true;
                     setEntities(new ArrayList<>());
                 }
             }
@@ -306,6 +312,12 @@ public class GameCanvas extends JComponent {
         }
         if (visibleGuideItem != null) {
             visibleGuideItem.drawPopup(g);
+        }
+
+        if (haveWon) {
+            // When player wins
+            winScreen.setVisible(true); // You need to add this setter in WinScreen
+            winScreen.render(g2d);
         }
     }
 }
