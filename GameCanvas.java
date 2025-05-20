@@ -49,28 +49,28 @@ public class GameCanvas extends JComponent {
         timer.start();
     }
 
-    // /***
-    //  * The LoopMusic method is responsible for finding, playing, and looping the background music for the animation.
-    //  * Try-Catch element is used here to look out for possible exception errors per loop iteration.
-    //  * @param location file location of the background music
-    //  */
-    // public static void LoopMusic(String location){
-    //     try {
-    //         File musicPath = new File(location);
-    //         if (musicPath.exists()){
-    //             AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
-    //             Clip clip = AudioSystem.getClip();
-    //             clip.open(audioInput);
-    //             clip.loop(Clip.LOOP_CONTINUOUSLY);
-    //             clip.start();
+    /***
+     * The LoopMusic method is responsible for finding, playing, and looping the background music for the animation.
+     * Try-Catch element is used here to look out for possible exception errors per loop iteration.
+     * @param location file location of the background music
+     */
+    public static void LoopMusic(String location){
+        try {
+            File musicPath = new File(location);
+            if (musicPath.exists()){
+                AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioInput);
+                clip.loop(Clip.LOOP_CONTINUOUSLY);
+                clip.start();
 
-    //         } else {
-    //             System.out.println("Cant find File");
-    //         }
-    //     } catch (Exception e) {
-    //         e.printStackTrace();
-    //     }
-    // }
+            } else {
+                System.out.println("Cant find File");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     
     
     private void connectToServer() {
@@ -103,9 +103,9 @@ public class GameCanvas extends JComponent {
         this.entities = entities;
         Map map = levelManager.getCurrentMap();
         int[][] playerPositions = {
-            {100, 100, 850, 500}, // Level 1
-            {100, 500, 850, 100}, // Level 2
-            {500, 100, 500, 500}  // Level 3
+            {100, 100, 831, 447}, // Level 1
+            {891, 63, 63, 453}, // Level 2
+            {315, 315, 894, 450}  // Level 3
         };
         int[][] portalPositions = {
             // portal 1, portal 2
