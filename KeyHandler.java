@@ -17,6 +17,7 @@ public class KeyHandler {
         moveRight = false;
         interactPressed = false;
         closeDialog = false;
+
     }
 
     AbstractAction UpMove = new AbstractAction() {
@@ -73,7 +74,7 @@ public class KeyHandler {
         public void actionPerformed(ActionEvent e) {
             moveRight = false;
         }
-    };
+    }; 
 
     AbstractAction InteractPress = new AbstractAction() {
         @Override
@@ -114,6 +115,10 @@ public class KeyHandler {
         return result;
     }
 
+    public boolean isInteractPressed() {
+        return interactPressed;
+    }
+
     public void addKeyBinds() {
         // Press actions
         actionMap.put("UpMove", UpMove);
@@ -140,8 +145,21 @@ public class KeyHandler {
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0, true), "RightRelease");
 
         // Interact key bindings
+        Action InteractPress = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                interactPressed = true;
+            }
+        };
+        Action InteractRelease = new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                interactPressed = false;
+            }
+        };
+
         actionMap.put("InteractPress", InteractPress);
+        actionMap.put("InteractRelease", InteractRelease);
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0, false), "InteractPress");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0, true), "InteractRelease");
 
         // Close dialog key binding
         actionMap.put("CloseDialogPress", CloseDialogPress);

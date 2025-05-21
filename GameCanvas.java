@@ -14,7 +14,6 @@ public class GameCanvas extends JComponent {
     private boolean haveWon;
     private WinScreen winScreen = new WinScreen();
     private String filePath;
-
     
     // Networking components
     private Socket socket;
@@ -22,12 +21,11 @@ public class GameCanvas extends JComponent {
     private WriteToServer wtsRunnable;
     private String serverIP;
     private Map map;
-    private LevelManager levelManager;
     private Portal portal1, portal2;
-    private boolean otherPlayerInPortal = false;
+    private boolean otherPlayerInPortal;
     
-    private ArrayList<ArrayList<GuideItem>> guideItemsPerLevel = new ArrayList<>();
-    private ArrayList<GuideItem> currentGuideItems = new ArrayList<>();
+    private ArrayList<GuideItem> guideItems = new ArrayList<>();
+    private ArrayList<Plate> plates = new ArrayList<>();
     
     public GameCanvas(String serverIP) {
         this.serverIP = serverIP;
@@ -35,7 +33,7 @@ public class GameCanvas extends JComponent {
         haveWon = false;
         this.setPreferredSize(new Dimension(Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
         entities = new ArrayList<>();
-        levelManager = new LevelManager();
+        map = new Map();
         setFocusable(true);
         requestFocusInWindow();
         keyHandler = new KeyHandler(this);
@@ -43,7 +41,7 @@ public class GameCanvas extends JComponent {
         
         connectToServer();
         LoopMusic(filePath);
-        setEntities(entities);
+        setupEntities();
 
         Timer timer = new Timer(16, e -> {
             update();
@@ -55,7 +53,7 @@ public class GameCanvas extends JComponent {
     }
 
     /***
-     * The LoopMusic method is responsible for finding, playing, and looping the background music for the animation.
+     * The LoopMusic method plays background music continuously for the game.
      * Try-Catch element is used here to look out for possible exception errors per loop iteration.
      * @param location file location of the background music
      */
@@ -68,7 +66,6 @@ public class GameCanvas extends JComponent {
                 clip.open(audioInput);
                 clip.loop(Clip.LOOP_CONTINUOUSLY);
                 clip.start();
-
             } else {
                 System.out.println("Cant find File");
             }
@@ -76,7 +73,6 @@ public class GameCanvas extends JComponent {
             e.printStackTrace();
         }
     }
-    
     
     private void connectToServer() {
         try {
@@ -104,82 +100,60 @@ public class GameCanvas extends JComponent {
         }
     }
     
-    public void setEntities(ArrayList<Entity> entities) {
-        this.entities = entities;
-        Map map = levelManager.getCurrentMap();
-        int[][] playerPositions = {
-            {100, 100, 831, 447}, // Level 1
-            {891, 63, 63, 453}, // Level 2
-            {315, 315, 894, 450}  // Level 3
-        };
-        int[][] portalPositions = {
-            // portal 1, portal 2
-            {768, 69, 123, 645}, // Level 1
-            {63, 132, 825, 453}, // Level 2
-            {894, 321, 63, 453}  // Level 3
-        };
-        int lvl = levelManager.getCurrentLevel();
-        Player player1 = new Player(1, playerPositions[lvl][0], playerPositions[lvl][1], Constants.GAME_SETTINGS.TILE_SIZE, Constants.GAME_SETTINGS.TILE_SIZE, map);
-        Player player2 = new Player(2, playerPositions[lvl][2], playerPositions[lvl][3], Constants.GAME_SETTINGS.TILE_SIZE, Constants.GAME_SETTINGS.TILE_SIZE, map);
+    private void setupEntities() {
+        // Set up players
+        Player player1 = new Player(1, 100, 100, Constants.GAME_SETTINGS.TILE_SIZE, Constants.GAME_SETTINGS.TILE_SIZE, map);
+        Player player2 = new Player(2, 831, 447, Constants.GAME_SETTINGS.TILE_SIZE, Constants.GAME_SETTINGS.TILE_SIZE, map);
+        
         if (playerID == 1) {
-            player1.setKeyHandler(keyHandler);
             currentPlayer = player1;
             otherPlayer = player2;
+            player1.setKeyHandler(keyHandler);
         } else {
-            player2.setKeyHandler(keyHandler);
             currentPlayer = player2;
             otherPlayer = player1;
+            player2.setKeyHandler(keyHandler);
         }
-        // --- GuideItems per level ---
-        if (guideItemsPerLevel.isEmpty()) {
-            // Level 1
-            ArrayList<GuideItem> g1 = new ArrayList<>();
-            g1.add(new GuideItem(258, 69, "Ancient Tome", "Three must rise… in silence they move…", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
-            // Level 2
-            ArrayList<GuideItem> g2 = new ArrayList<>();
-            g2.add(new GuideItem(200, 200, "Old Book", "…one after another, with time between each.", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
-            g2.add(new GuideItem(100, 250, "Diary of Hosimachi Suisei", "yagoo…where am i?", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
-            // Level 3
-            ArrayList<GuideItem> g3 = new ArrayList<>();
-            g3.add(new GuideItem(300, 300, "Mysterious Encyclopedia", "Work together to escape.", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
-            g3.add(new GuideItem(300, 300, "Confusing Code", "Work together to escape.", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
-            g3.add(new GuideItem(300, 300, "Mysterious Encyclopedia", "Work together to escape.", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
-            guideItemsPerLevel.add(g1);
-            guideItemsPerLevel.add(g2);
-            guideItemsPerLevel.add(g3);
+
+        // Set up guide item
+        GuideItem guideItem = new GuideItem(258, 69, "A Poet's Keepsake", 
+            "Begin at dawn when one stands tall, Skip the noon, let the evening call. Catch the twilight in between, The ticking riddle sits unseen.",       
+            Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT);
+        guideItem.setPlayerAndHandler(currentPlayer, keyHandler);
+        guideItems.add(guideItem);
+        entities.add(guideItem);
+
+        // Set up plates
+        int[][] platePositions = {{200, 200}, {400, 200}, {600, 200}};
+        for (int i = 0; i < 3; i++) {
+            Plate plate = new Plate(i + 1, 
+                platePositions[i][0], 
+                platePositions[i][1], 
+                Constants.GAME_SETTINGS.TILE_SIZE, 
+                Constants.GAME_SETTINGS.TILE_SIZE);
+            plate.setPlayerAndHandler(currentPlayer, keyHandler);
+            plates.add(plate);
+            entities.add(plate);
         }
-        // Remove old GuideItems from entities
-        for (GuideItem gi : currentGuideItems) {
-            entities.remove(gi);
-        }
-        // Add new GuideItems for this level
-        currentGuideItems = guideItemsPerLevel.get(lvl);
-        for (GuideItem gi : currentGuideItems) {
-            gi.setPlayerAndHandler(currentPlayer, keyHandler);
-            entities.add(gi);
-        }
-        // --- Portals ---
-        if (portal1 == null) {
-            portal1 = new Portal(1, portalPositions[lvl][0], portalPositions[lvl][1], Constants.GAME_SETTINGS.TILE_SIZE, Constants.GAME_SETTINGS.TILE_SIZE);
-            portal2 = new Portal(2, portalPositions[lvl][2], portalPositions[lvl][3], Constants.GAME_SETTINGS.TILE_SIZE, Constants.GAME_SETTINGS.TILE_SIZE);
+
+        // Set up portals
+        portal1 = new Portal(1, 768, 69, Constants.GAME_SETTINGS.TILE_SIZE, Constants.GAME_SETTINGS.TILE_SIZE);
+        portal2 = new Portal(2, 123, 630, Constants.GAME_SETTINGS.TILE_SIZE, Constants.GAME_SETTINGS.TILE_SIZE);
+        
+        // Set portal-player relationships
+        if (playerID == 1) {
             portal1.setPlayer(currentPlayer);
             portal2.setPlayer(otherPlayer);
-            entities.add(portal1);
-            entities.add(portal2);
         } else {
-            portal1.setX(portalPositions[lvl][0]);
-            portal1.setY(portalPositions[lvl][1]);
-            portal2.setX(portalPositions[lvl][2]);
-            portal2.setY(portalPositions[lvl][3]);
-            // Update player references in case they changed
-            portal1.setPlayer(currentPlayer);
-            portal2.setPlayer(otherPlayer);
+            portal2.setPlayer(currentPlayer);
+            portal1.setPlayer(otherPlayer);
         }
-        // Add players
+
+        entities.add(portal1);
+        entities.add(portal2);
         entities.add(player1);
         entities.add(player2);
     }
-    
     
     public double getPlayerX() {
         return currentPlayer.getX();
@@ -207,17 +181,20 @@ public class GameCanvas extends JComponent {
             for (Entity entity : entities) {
                 entity.update();
             }
-            // Check if both players are in their portals
-            boolean currentInPortal = portal1.checkCollision(currentPlayer);
-            boolean otherInPortal = portal2.checkCollision(otherPlayer);
-            if (currentInPortal && otherInPortal) {
-                if (levelManager.nextLevel()) {
-                    setEntities(new ArrayList<>());
-                } else {
-                    // Game finished, maybe show a message or reset
-                    levelManager.reset();
+
+            // Check if both players are in portals and sequence is complete
+            if (Plate.isSequenceComplete()) {
+                boolean currentInPortal = (playerID == 1) ? 
+                    portal1.checkCollision(currentPlayer) : 
+                    portal2.checkCollision(currentPlayer);
+                boolean otherInPortal = (playerID == 1) ? 
+                    portal2.checkCollision(otherPlayer) : 
+                    portal1.checkCollision(otherPlayer);
+
+                if (currentInPortal && otherInPortal) {
+                    // Game finished
                     haveWon = true;
-                    setEntities(new ArrayList<>());
+                    entities.clear();
                 }
             }
         }
@@ -225,22 +202,44 @@ public class GameCanvas extends JComponent {
 
     private class ReadFromServer implements Runnable {
         private DataInputStream in;
-        private double otherPlayerX, otherPlayerY;
-        private boolean otherPlayerFacingLeft;
+        private String otherPlayerData;
+        private String otherPortalData;
+        private int otherSequencePosition;
+        private boolean[] otherPlateStates = new boolean[3];
 
         public ReadFromServer(DataInputStream in) {
             this.in = in;
+            this.otherPlayerData = playerID == 1 ? "2,600,100,false,false,0" : "1,100,100,false,false,0";
+            this.otherPortalData = playerID == 1 ? "123,630|768,69" : "768,69|123,630";
         }
         
         public void run() {
             try {
                 while(true) {
-                    otherPlayerX = in.readDouble();
-                    otherPlayerY = in.readDouble();
-                    otherPlayerFacingLeft = in.readBoolean();
-                    otherPlayerInPortal = in.readBoolean();
+                    otherPlayerData = in.readUTF();
+                    otherPortalData = in.readUTF();
+                    
+                    // Read plate states from other player
+                    otherSequencePosition = in.readInt();
+                    for (int i = 0; i < 3; i++) {
+                        otherPlateStates[i] = in.readBoolean();
+                    }
+                    
                     if (otherPlayer != null) {
-                        otherPlayer.setFacingLeft(otherPlayerFacingLeft);
+                        String[] playerData = otherPlayerData.split(",");
+                        otherPlayer.setX(Double.parseDouble(playerData[1]));
+                        otherPlayer.setY(Double.parseDouble(playerData[2]));
+                        otherPlayer.setFacingLeft(Boolean.parseBoolean(playerData[3]));
+                        otherPlayerInPortal = Boolean.parseBoolean(playerData[4]);
+                    }
+                    
+                    // Update plate states from other player
+                    if (!plates.isEmpty()) {
+                        for (int i = 0; i < plates.size(); i++) {
+                            Plate plate = plates.get(i);
+                            plate.setActivated(otherPlateStates[i]);
+                        }
+                        Plate.setCurrentSequencePosition(otherSequencePosition);
                     }
                 }
             } catch (Exception e) {
@@ -259,8 +258,15 @@ public class GameCanvas extends JComponent {
             }
         }
         
-        public double getOtherPlayerX() { return otherPlayerX; }
-        public double getOtherPlayerY() { return otherPlayerY; }
+        public double getOtherPlayerX() { 
+            String[] playerData = otherPlayerData.split(",");
+            return Double.parseDouble(playerData[1]); 
+        }
+        
+        public double getOtherPlayerY() { 
+            String[] playerData = otherPlayerData.split(",");
+            return Double.parseDouble(playerData[2]); 
+        }
     }
 
     private class WriteToServer implements Runnable {
@@ -273,12 +279,36 @@ public class GameCanvas extends JComponent {
         public void run() {
             try {
                 while(true) {
-                    if (currentPlayer != null) {
-                        out.writeDouble(currentPlayer.getX());
-                        out.writeDouble(currentPlayer.getY());
-                        out.writeBoolean(currentPlayer.isFacingLeft());
-                        boolean currentInPortal = portal1.checkCollision(currentPlayer);
-                        out.writeBoolean(currentInPortal);
+                    if (currentPlayer != null && portal1 != null && portal2 != null) {
+                        // Check portal collision and sequence completion
+                        boolean portalCollision = (playerID == 1) ? 
+                            portal1.checkCollision(currentPlayer) : 
+                            portal2.checkCollision(currentPlayer);
+                        boolean inPortal = portalCollision && Plate.isSequenceComplete();
+                        
+                        // Create player data string
+                        String playerData = String.format("%d,%.2f,%.2f,%b,%b,0",
+                            playerID,
+                            currentPlayer.getX(),
+                            currentPlayer.getY(),
+                            currentPlayer.isFacingLeft(),
+                            inPortal
+                        );
+                        out.writeUTF(playerData);
+                        
+                        // Create portal data string
+                        String portalData = String.format("%.2f,%.2f|%.2f,%.2f",
+                            portal1.getX(), portal1.getY(),
+                            portal2.getX(), portal2.getY()
+                        );
+                        out.writeUTF(portalData);
+
+                        // Send plate states
+                        out.writeInt(Plate.getCurrentSequencePosition());
+                        for (Plate plate : plates) {
+                            out.writeBoolean(plate.isActivated());
+                        }
+                        
                         out.flush();
                     }
                     Thread.sleep(16);
@@ -296,7 +326,8 @@ public class GameCanvas extends JComponent {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setColor(new Color(255, 255, 255));
         g2d.fillRect(0, 0, Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT);
-        levelManager.getCurrentMap().draw(g2d);
+        map.draw(g2d);
+        
         GuideItem visibleGuideItem = null;
         for (Entity entity : entities) {
             entity.draw(g2d);
@@ -304,20 +335,31 @@ public class GameCanvas extends JComponent {
                 visibleGuideItem = (GuideItem)entity;
             }
         }
-        if (portal1.checkCollision(currentPlayer)) {
-            g2d.drawString("Waiting for the other player to enter the portal...", 100, 100);
+
+        // Draw sequence completion status
+        if (!Plate.isSequenceComplete()) {
+            g2d.setColor(Color.RED);
+            g2d.drawString("Activate the plates in the correct sequence!", 100, 50);
+        } else {
+            g2d.setColor(Color.GREEN);
+            g2d.drawString("Sequence complete! Portals are now active!", 100, 50);
         }
-        if (portal2.checkCollision(otherPlayer)) {
-            g2d.drawString("Waiting for you to enter the portal...", 100, 120);
+
+        if (portal1.checkCollision(currentPlayer) || portal2.checkCollision(otherPlayer)) {
+            if (Plate.isSequenceComplete()) {
+                g2d.drawString("Waiting for the other player to enter the portal...", 100, 100);
+            } else {
+                g2d.drawString("Complete the plate sequence first!", 100, 100);
+            }
         }
+
         if (visibleGuideItem != null) {
             visibleGuideItem.drawPopup(g);
         }
 
         if (haveWon) {
-            // When player wins
-            winScreen.setVisible(true); // You need to add this setter in WinScreen
-            winScreen.render(g2d);
+            winScreen.setVisible(true);
+            winScreen.draw(g2d);
         }
     }
 }
