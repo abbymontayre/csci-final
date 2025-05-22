@@ -104,5 +104,10 @@ public class Map {
                     break;
             }
         }
+
+        public void setMapID(int id) {
+            currentmapID = id;
+            updateMap();
+        }
     }
 

@@ -237,13 +237,15 @@ public class GameCanvas extends JComponent {
                 boolean currentInPortal = (playerID == 1) ? 
                     portal1.checkCollision(currentPlayer) : 
                     portal2.checkCollision(currentPlayer);
-                boolean otherInPortal = (playerID == 1) ? 
-                    portal2.checkCollision(otherPlayer) : 
-                    portal1.checkCollision(otherPlayer);
+                boolean otherInPortal = otherPlayerInPortal;
 
                 if (currentInPortal && otherInPortal) {
                     if(map.getMapID() < 2){
-                        map.incrementMapID();
+                        // Only player 1 increments the map ID to ensure synchronization
+                        if (playerID == 1) {
+                            map.incrementMapID();
+                            System.out.println("Player 1 incrementing map ID to: " + map.getMapID());
+                        }
                         entities.clear();
                         setupEntities();
                     } else {
@@ -282,7 +284,15 @@ public class GameCanvas extends JComponent {
                         otherPlayer.setY(Double.parseDouble(playerData[2]));
                         otherPlayer.setFacingLeft(Boolean.parseBoolean(playerData[3]));
                         otherPlayerInPortal = Boolean.parseBoolean(playerData[4]);
-                        otherMapID = Integer.parseInt(playerData[5]);
+                        int receivedMapID = Integer.parseInt(playerData[5]);
+                        
+                        // If the other player's map ID is different and higher, update our map
+                        if (receivedMapID > map.getMapID()) {
+                            System.out.println("Updating map ID from " + map.getMapID() + " to " + receivedMapID);
+                            map.setMapID(receivedMapID);
+                            entities.clear();
+                            setupEntities();
+                        }
                     }
                     
                     // Update plate states from other player
