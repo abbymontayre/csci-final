@@ -95,8 +95,6 @@ public class GameServer {
     private class ReadFromClient implements Runnable {
         private int playerID;
         private DataInputStream in;
-        private long lastPrintTime = 0;
-        private static final long PRINT_DELAY = 500;
 
         public ReadFromClient(int playerID, DataInputStream in) {
             this.playerID = playerID;

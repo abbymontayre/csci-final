@@ -102,7 +102,7 @@ public class GameCanvas extends JComponent {
     private void setupEntities() {
         // Set up players
         Player player1 = new Player(1, 896, 192, Constants.GAME_SETTINGS.TILE_SIZE, Constants.GAME_SETTINGS.TILE_SIZE, map);
-        Player player2 = new Player(2, 192, 576, Constants.GAME_SETTINGS.TILE_SIZE, Constants.GAME_SETTINGS.TILE_SIZE, map);
+        Player player2 = new Player(2, 128, 448, Constants.GAME_SETTINGS.TILE_SIZE, Constants.GAME_SETTINGS.TILE_SIZE, map);
         
         if (playerID == 1) {
             currentPlayer = player1;
