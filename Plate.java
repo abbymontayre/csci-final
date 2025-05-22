@@ -10,7 +10,7 @@ public class Plate extends Entity {
     private int sequenceNumber;  // The correct position in the sequence
     private static boolean[] activatedPlates;  // Tracks which plates are activated
     private static int currentSequencePosition = 0;  // Tracks current position in sequence
-    private static final int TOTAL_PLATES = 5;  // Total number of plates in the sequence
+    private static final int TOTAL_PLATES = 3;  // Total number of plates in the sequence
     private static ArrayList<Plate> allPlates = new ArrayList<>();  // Keep track of all plates
 
     public Plate(int sequenceNumber, int x, int y, int width, int height) {

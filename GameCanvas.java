@@ -26,29 +26,30 @@ public class GameCanvas extends JComponent {
     
     private ArrayList<GuideItem> guideItems = new ArrayList<>();
     private ArrayList<Plate> plates = new ArrayList<>();
-        
-        public GameCanvas(String serverIP) {
-            this.serverIP = serverIP;
-            filePath = "bgMusic.wav";
-            haveWon = false;
-            this.setPreferredSize(new Dimension(Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
-            entities = new ArrayList<>();
-            map = new Map();
-            setFocusable(true);
-            requestFocusInWindow();
-            keyHandler = new KeyHandler(this);
-            keyHandler.addKeyBinds();
-            
-            connectToServer();
-            LoopMusic(filePath);
-            setupEntities();
     
-            Timer timer = new Timer(16, e -> {
-                update();
-                repaint();
-            });
-            timer.start();
-            this.add(winScreen);
+    public GameCanvas(String serverIP) {
+        this.serverIP = serverIP;
+        filePath = "bgMusic.wav";
+        haveWon = false;
+        this.setPreferredSize(new Dimension(Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
+        entities = new ArrayList<>();
+        map = new Map();
+        setFocusable(true);
+        requestFocusInWindow();
+        keyHandler = new KeyHandler(this);
+        keyHandler.addKeyBinds();
+        
+        connectToServer();
+        LoopMusic(filePath);
+        setupEntities();
+
+        Timer timer = new Timer(16, e -> {
+            update();
+            repaint();
+        });
+        timer.start();
+
+        this.add(winScreen);
     }
 
     /***
@@ -102,7 +103,7 @@ public class GameCanvas extends JComponent {
     private void setupEntities() {
         // Set up players
         Player player1 = new Player(1, 896, 192, Constants.GAME_SETTINGS.TILE_SIZE, Constants.GAME_SETTINGS.TILE_SIZE, map);
-        Player player2 = new Player(2, 128, 448, Constants.GAME_SETTINGS.TILE_SIZE, Constants.GAME_SETTINGS.TILE_SIZE, map);
+        Player player2 = new Player(2, 192, 576, Constants.GAME_SETTINGS.TILE_SIZE, Constants.GAME_SETTINGS.TILE_SIZE, map);
         
         if (playerID == 1) {
             currentPlayer = player1;
@@ -114,27 +115,17 @@ public class GameCanvas extends JComponent {
             player2.setKeyHandler(keyHandler);
         }
 
-        guideItems.add(new GuideItem(384, 320, "The King's Prologue","On his first day as King, he looked to the western sky as someone told him lately that everyone deserved the chance to fly.", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
-        guideItems.add(new GuideItem(896, 448, "The Queen's Demise","Her name was Anne Boleyn, She was the second woman the King ever truly loved. Though, such love was short-lived as he often went eastward, entertaining a new innocent dame. When word broke out through Lady Whistledown's letters, she ran off to the forest and was beheaded.", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
-        guideItems.add(new GuideItem(192, 128, "Diary of a Rookie Rook","It was my third day on the job. I was only getting the hang of things until..,.you know...this happened..I mean how was I supposed to know that I shouldn't castle the king this early? Whatever..I'm stuck in this corner now, might as well get comfortable up here.", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
-        guideItems.add(new GuideItem(64, 640, "Forthcoming of the New Bishop","I stand here today in the middle of a worldly crisis. We beg for no wars, and peace for all yet dangers lie creeping. Something tells me we must go beneath the veil of our hopes of change and ask ourselves, 'For Whom do we evoke change?'", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
-        guideItems.add(new GuideItem(768, 128, "The Knight of my Night","It had been 5 months since I have last seen my husband, and it has been amazing! Ever since I found out from Lady Whistledown that he has had an affair with not one but twelve courtesans?! In a Kingdom, where I am in the center of his drama, I knew I had to run away. That's when that selfless Knight helped staged my beheading. I wished I had gotten his name, perhaps he wouldve made a better husband than that lousy king!", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
-        guideItems.add(new GuideItem(704, 640, "Suisei's Diary","yagoo....where am i", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
-        guideItems.add(new GuideItem(64, 256, "List of all the Zelda Games","We wont be actually able to fit the list of all the Zelda games, so we made our own. We hope you like it!", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
-                                                                
-        for (GuideItem item : guideItems) {
-            item.setPlayerAndHandler(currentPlayer, keyHandler);
-            entities.add(item);
-        }
+        // Set up guide item
+        GuideItem guideItem = new GuideItem(258, 469, "A Poet's Keepsake", 
+            "Begin at dawn when one stands tall, Skip the noon, let the evening call. Catch the twilight in between, The ticking riddle sits unseen.",       
+            Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT);
+        guideItem.setPlayerAndHandler(currentPlayer, keyHandler);
+        guideItems.add(guideItem);
+        entities.add(guideItem);
+
         // Set up plates
-        int[][] platePositions = {
-            {128, 320},
-            {896, 320},
-            {576, 64},
-            {512,640},
-            {320,448}
-        };
-        for (int i = 0; i < 5; i++) {
+        int[][] platePositions = {{200, 200}, {400, 200}, {600, 200}};
+        for (int i = 0; i < 3; i++) {
             Plate plate = new Plate(i + 1, 
                 platePositions[i][0], 
                 platePositions[i][1], 
@@ -146,8 +137,8 @@ public class GameCanvas extends JComponent {
         }
 
         // Set up portals
-        portal1 = new Portal(1, 64, 64, Constants.GAME_SETTINGS.TILE_SIZE, Constants.GAME_SETTINGS.TILE_SIZE);
-        portal2 = new Portal(2, 896, 640, Constants.GAME_SETTINGS.TILE_SIZE, Constants.GAME_SETTINGS.TILE_SIZE);
+        portal1 = new Portal(1, 768, 69, Constants.GAME_SETTINGS.TILE_SIZE, Constants.GAME_SETTINGS.TILE_SIZE);
+        portal2 = new Portal(2, 123, 630, Constants.GAME_SETTINGS.TILE_SIZE, Constants.GAME_SETTINGS.TILE_SIZE);
         
         // Set portal-player relationships
         if (playerID == 1) {
@@ -214,7 +205,7 @@ public class GameCanvas extends JComponent {
         private DataInputStream in;
         private String otherPlayerData;
         private int otherSequencePosition;
-        private boolean[] otherPlateStates = new boolean[5];
+        private boolean[] otherPlateStates = new boolean[3];
 
         public ReadFromServer(DataInputStream in) {
             this.in = in;
@@ -227,7 +218,7 @@ public class GameCanvas extends JComponent {
                     
                     // Read plate states from other player
                     otherSequencePosition = in.readInt();
-                    for (int i = 0; i < 5; i++) {
+                    for (int i = 0; i < 3; i++) {
                         otherPlateStates[i] = in.readBoolean();
                     }
                     
@@ -351,11 +342,11 @@ public class GameCanvas extends JComponent {
 
         // Draw sequence completion status
         if (!Plate.isSequenceComplete()) {
-            g2d.setColor(Color.WHITE);
-                g2d.drawString("Escape the pits of the Ghastly Meadows!", 70, 50);
-            } else {
+            g2d.setColor(Color.RED);
+            g2d.drawString("Activate the plates in the correct sequence!", 100, 618);
+        } else {
             g2d.setColor(Color.GREEN);
-            g2d.drawString("Sequence complete! Portals are now active!", 70, 50);
+            g2d.drawString("Sequence complete! Portals are now active!", 100, 618);
         }
 
         boolean inPortal = (playerID == 1) ? 
@@ -364,9 +355,9 @@ public class GameCanvas extends JComponent {
             
         if (inPortal) {
             if (Plate.isSequenceComplete()) {
-                g2d.drawString("Waiting for the other player to enter the portal...", 70, 730);
+                g2d.drawString("Waiting for the other player to enter the portal...", 100, 100);
             } else {
-                g2d.drawString("This portal doesn't seem to be working...", 70, 730);
+                g2d.drawString("Complete the plate sequence first!", 100, 100);
             }
         }
 
