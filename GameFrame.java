@@ -42,7 +42,7 @@ public class GameFrame {
             System.out.println("Error: GameCanvas not initialized. Connection failed.");
             return;
         }
-        frame.setTitle("Who Goes Where?");
+        frame.setTitle("Who Goes Where? Player: " );
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(gameCanvas);

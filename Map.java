@@ -91,6 +91,11 @@ public class Map {
             currentmapID++;
         }
 
+        public void setMapID(int id) {
+            currentmapID = id;
+            updateMap();
+        }
+
         private void updateMap(){
             switch (currentmapID) {
                 case 0:
@@ -103,11 +108,6 @@ public class Map {
                     map = LEVEL3;
                     break;
             }
-        }
-
-        public void setMapID(int id) {
-            currentmapID = id;
-            updateMap();
         }
     }
 
