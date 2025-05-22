@@ -111,7 +111,7 @@ public class KeyHandler {
 
     public boolean shouldCloseDialog() {
         if (closeDialog) {
-            closeDialog = false;
+        closeDialog = false;
             return true;
         }
         return false;

@@ -21,20 +21,20 @@ public class GameServer {
         System.out.println("Game Server");
         numPlayers = 0;
         maxPlayers = 2;
-        try {
-            System.out.println("Server started on port: " + Constants.GAME_SETTINGS.PORT);
-            ss = new ServerSocket(Constants.GAME_SETTINGS.PORT);
-        } catch (Exception e) {
-            System.out.println("Error starting server: " + e.getMessage());
-        }
+        
+        P1data = "1,100,100,false,false,0,false";
+        P2data = "2,600,100,false,false,0,false";
     }
 
     private synchronized void updatePlayerState(int playerIndex, boolean inPortal, int sequence) {
         playersInPortal[playerIndex - 1] = inPortal;
-        playersCompletedSequence[playerIndex - 1] = (sequence == 5);
+        playersCompletedSequence[playerIndex - 1] = (sequence == 5); // Assuming 3 is the complete sequence
         
+        // Check if we can trigger win condition (both players in portal with complete sequence)
         if (!gameWon && playersInPortal[0] && playersInPortal[1] && 
             playersCompletedSequence[0] && playersCompletedSequence[1]) {
+            
+            System.out.println("Both players completed sequence and in portal! Game won!");
             gameWon = true;
             
             // Update both players' data with win state
@@ -95,6 +95,8 @@ public class GameServer {
     private class ReadFromClient implements Runnable {
         private int playerID;
         private DataInputStream in;
+        private long lastPrintTime = 0;
+        private static final long PRINT_DELAY = 500;
 
         public ReadFromClient(int playerID, DataInputStream in) {
             this.playerID = playerID;
@@ -102,6 +104,17 @@ public class GameServer {
             System.out.println("RFC created for player #: " + playerID);
         }
 
+        private void debugPrint(String... messages) {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastPrintTime >= PRINT_DELAY) {
+                System.out.println("\n--- Player " + playerID + " Update ---");
+                for (String message : messages) {
+                    System.out.println(message);
+                }
+                System.out.println("----------------------");
+                lastPrintTime = currentTime;
+            }
+        }
         
         @Override
         public void run() {
@@ -119,6 +132,12 @@ public class GameServer {
                         boolean inPortal = Boolean.parseBoolean(p1Info[4]);
                         updatePlayerState(1, inPortal, P1currentSequence);
                         
+                        debugPrint(
+                            "Player 1 Data: " + P1data,
+                            "Player 1 Sequence: " + P1currentSequence,
+                            "In Portal: " + inPortal,
+                            "Sequence Complete: " + playersCompletedSequence[0]
+                        );
                     } else {
                         P2data = in.readUTF();
                         P2currentSequence = in.readInt();
@@ -130,7 +149,13 @@ public class GameServer {
                         String[] p2Info = P2data.split(",");
                         boolean inPortal = Boolean.parseBoolean(p2Info[4]);
                         updatePlayerState(2, inPortal, P2currentSequence);
-
+                        
+                        debugPrint(
+                            "Player 2 Data: " + P2data,
+                            "Player 2 Sequence: " + P2currentSequence,
+                            "In Portal: " + inPortal,
+                            "Sequence Complete: " + playersCompletedSequence[1]
+                        );
                     }
                 }
             } catch (IOException e) {

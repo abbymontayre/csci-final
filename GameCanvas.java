@@ -26,29 +26,30 @@ public class GameCanvas extends JComponent {
     
     private ArrayList<GuideItem> guideItems = new ArrayList<>();
     private ArrayList<Plate> plates = new ArrayList<>();
-        
-        public GameCanvas(String serverIP) {
-            this.serverIP = serverIP;
-            filePath = "bgMusic.wav";
-            haveWon = false;
-            this.setPreferredSize(new Dimension(Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
-            entities = new ArrayList<>();
-            map = new Map();
-            setFocusable(true);
-            requestFocusInWindow();
-            keyHandler = new KeyHandler(this);
-            keyHandler.addKeyBinds();
-            
-            connectToServer();
-            LoopMusic(filePath);
-            setupEntities();
     
-            Timer timer = new Timer(16, e -> {
-                update();
-                repaint();
-            });
-            timer.start();
-            this.add(winScreen);
+    public GameCanvas(String serverIP) {
+        this.serverIP = serverIP;
+        filePath = "bgMusic.wav";
+        haveWon = false;
+        this.setPreferredSize(new Dimension(Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
+        entities = new ArrayList<>();
+        map = new Map();
+        setFocusable(true);
+        requestFocusInWindow();
+        keyHandler = new KeyHandler(this);
+        keyHandler.addKeyBinds();
+        
+        connectToServer();
+        LoopMusic(filePath);
+        setupEntities();
+
+        Timer timer = new Timer(16, e -> {
+            update();
+            repaint();
+        });
+        timer.start();
+
+        this.add(winScreen);
     }
 
     /***
@@ -114,6 +115,7 @@ public class GameCanvas extends JComponent {
             player2.setKeyHandler(keyHandler);
         }
 
+        // Set up guide item
         guideItems.add(new GuideItem(384, 320, "The King's Prologue","On his first day as King, he looked to the western sky as someone told him lately that everyone deserved the chance to fly.", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
         guideItems.add(new GuideItem(896, 448, "The Queen's Demise","Her name was Anne Boleyn, She was the second woman the King ever truly loved. Though, such love was short-lived as he often went eastward, entertaining a new innocent dame. When word broke out through Lady Whistledown's letters, she ran off to the forest and was beheaded.", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
         guideItems.add(new GuideItem(192, 128, "Diary of a Rookie Rook","It was my third day on the job. I was only getting the hang of things until..,.you know...this happened..I mean how was I supposed to know that I shouldn't castle the king this early? Whatever..I'm stuck in this corner now, might as well get comfortable up here.", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
@@ -121,11 +123,12 @@ public class GameCanvas extends JComponent {
         guideItems.add(new GuideItem(768, 128, "The Knight of my Night","It had been 5 months since I have last seen my husband, and it has been amazing! Ever since I found out from Lady Whistledown that he has had an affair with not one but twelve courtesans?! In a Kingdom, where I am in the center of his drama, I knew I had to run away. That's when that selfless Knight helped staged my beheading. I wished I had gotten his name, perhaps he wouldve made a better husband than that lousy king!", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
         guideItems.add(new GuideItem(704, 640, "Suisei's Diary","yagoo....where am i", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
         guideItems.add(new GuideItem(64, 256, "List of all the Zelda Games","We wont be actually able to fit the list of all the Zelda games, so we made our own. We hope you like it!", Constants.GAME_SETTINGS.SCREEN_WIDTH, Constants.GAME_SETTINGS.SCREEN_HEIGHT));
-                                                                
+
         for (GuideItem item : guideItems) {
             item.setPlayerAndHandler(currentPlayer, keyHandler);
             entities.add(item);
         }
+
         // Set up plates
         int[][] platePositions = {
             {128, 320},
@@ -352,8 +355,8 @@ public class GameCanvas extends JComponent {
         // Draw sequence completion status
         if (!Plate.isSequenceComplete()) {
             g2d.setColor(Color.WHITE);
-                g2d.drawString("Escape the pits of the Ghastly Meadows!", 70, 50);
-            } else {
+            g2d.drawString("Escape the pits of the Ghastly Meadows!", 70, 50);
+        } else {
             g2d.setColor(Color.GREEN);
             g2d.drawString("Sequence complete! Portals are now active!", 70, 50);
         }
