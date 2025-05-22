@@ -269,15 +269,20 @@ public class GameCanvas extends JComponent {
         public void run() {
             try {
                 while(true) {
-                    otherPlayer.setX(in.readDouble());
-                    otherPlayer.setY(in.readDouble());
-                    otherPlayer.setFacingLeft(in.readBoolean());
-                    otherPlayerInPortal = (in.readBoolean());
-                    otherMapID = in.readInt();
+                    otherPlayerData = in.readUTF();
                     // Read plate states from other player
                     sequencePosition = in.readInt();
                     for (int i = 0; i < 3; i++) {
                         plateStates[i] = in.readBoolean();
+                    }
+                    
+                    if (otherPlayer != null) {
+                        String[] playerData = otherPlayerData.split(",");
+                        otherPlayer.setX(Double.parseDouble(playerData[1]));
+                        otherPlayer.setY(Double.parseDouble(playerData[2]));
+                        otherPlayer.setFacingLeft(Boolean.parseBoolean(playerData[3]));
+                        otherPlayerInPortal = Boolean.parseBoolean(playerData[4]);
+                        otherMapID = Integer.parseInt(playerData[5]);
                     }
                     
                     // Update plate states from other player
@@ -333,13 +338,16 @@ public class GameCanvas extends JComponent {
                             portal2.checkCollision(currentPlayer);
                         boolean inPortal = portalCollision && Plate.isSequenceComplete();
                         
-                        // Send Player Data
-                        out.writeInt(playerID);
-                        out.writeDouble(currentPlayer.getX());
-                        out.writeDouble(currentPlayer.getY());
-                        out.writeBoolean(currentPlayer.isFacingLeft());
-                        out.writeBoolean(inPortal);
-                        out.writeInt(map.getMapID());
+                        // Create player data string              
+                        String playerData = String.format("%d,%.2f,%.2f,%b,%b,%d",
+                            playerID,
+                            currentPlayer.getX(),
+                            currentPlayer.getY(),
+                            currentPlayer.isFacingLeft(),
+                            inPortal,
+                            map.getMapID()
+                        );
+                        out.writeUTF(playerData);
                         
                         // Send plate states
                         out.writeInt(Plate.getCurrentSequencePosition());
@@ -349,7 +357,7 @@ public class GameCanvas extends JComponent {
                         out.flush();
 
                         // Sending data
-                        System.out.println("Client sent to server: " + currentPlayer.getX() + "," + currentPlayer.getY() + "," + currentPlayer.isFacingLeft() + "," + inPortal + "," + map.getMapID());
+                        System.out.println("Client sent to server: " + playerData);
                     }
                     Thread.sleep(16);
                 }
