@@ -1,3 +1,19 @@
+/**
+    @author Raphaelle Abby U. Montayre (243114) and Angela Kyra U. Salarda (246444)
+    @version 22 May 2025
+
+    I have not discussed the Java language code in my program
+    with anyone other than my instructor or the teaching assistants
+    assigned to this course.
+
+    I have not used Java language code obtained from another student,
+    or any other unauthorized source, either modified or unmodified.
+
+    If any Java language code or documentation used in my program
+    was obtained from another source, such as a textbook or website,
+    that has been clearly noted with a proper citation in the comments
+    of my program.
+ */
 import java.awt.*;
 import javax.swing.ImageIcon;
 import java.awt.geom.AffineTransform;
@@ -11,6 +27,19 @@ public class Player extends Entity {
     private Map map;  // Reference to the map for collision checks
     private boolean canMove = true;  // New field to control movement
 
+    /**
+     * Constructor for the Player class.
+     * Initializes the player with a given ID, position, size, and map.
+     * Loads the player sprite based on the player ID.
+     *
+     * @param playerID The ID of the player (1 or 2).
+     * @param x The x-coordinate of the player.
+     * @param y The y-coordinate of the player.
+     * @param width The width of the player.
+     * @param height The height of the player.
+     * @param map The map object for collision detection.
+     */
+
     public Player(int playerID, double x, double y, int width, int height, Map map) {  
         super(x, y, width, height);
         this.playerID = playerID;
@@ -21,13 +50,31 @@ public class Player extends Entity {
         this.originalImage = icon.getImage();
     }
 
+    /**
+     * The method setKeyHandler sets the key handler for the player.
+     * This allows the player to respond to key events.
+     */
+
     public void setKeyHandler(KeyHandler keyHandler) {
         this.keyHandler = keyHandler;
     }
 
+    /**
+     * The method setCanMove sets whether the player can move.
+     * This is used to control player movement.
+     */
+
     public void setCanMove(boolean canMove) {
         this.canMove = canMove;
     }
+
+    /**
+     * The method draw draws the player on the given Graphics2D object.
+     * It uses the original image and applies a transformation
+     * to flip the image if the player is facing left.
+     * 
+     * @param g2d The Graphics2D object to draw on.
+     */
 
     public void draw(Graphics2D g2d) {
         // Save the original transform
@@ -46,6 +93,12 @@ public class Player extends Entity {
         // Restore the original transform
         g2d.setTransform(reset);
     }
+
+    /**
+     * The method update updates the player's position based on key input.
+     * It checks for collisions with walls and updates the player's position accordingly.
+     * The player can only move if canMove is true.
+     */
 
     @Override
     public void update() {
@@ -85,9 +138,21 @@ public class Player extends Entity {
         }
     }
 
+    /**
+     * The method isFacingLeft checks if the player is facing left.
+     * It returns true if the player is facing left, false otherwise.
+     */
+
     public boolean isFacingLeft() {
         return facingLeft;
     }
+
+    /**
+     * The method setFacingLeft sets the player's facing direction.
+     * It is used to update the direction the player is facing.
+     *
+     * @param facingLeft True if the player is facing left, false otherwise.
+     */
 
     public void setFacingLeft(boolean facingLeft) {
         this.facingLeft = facingLeft;

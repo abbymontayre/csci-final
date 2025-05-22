@@ -1,3 +1,19 @@
+/**
+    @author Raphaelle Abby U. Montayre (243114) and Angela Kyra U. Salarda (246444)
+    @version 22 May 2025
+
+    I have not discussed the Java language code in my program
+    with anyone other than my instructor or the teaching assistants
+    assigned to this course.
+
+    I have not used Java language code obtained from another student,
+    or any other unauthorized source, either modified or unmodified.
+
+    If any Java language code or documentation used in my program
+    was obtained from another source, such as a textbook or website,
+    that has been clearly noted with a proper citation in the comments
+    of my program. 
+ */
 import java.awt.*;
 
 public class Popup {
@@ -9,6 +25,15 @@ public class Popup {
     private Font titleFont = new Font("SansSerif", Font.BOLD, 24);
     private Font contentFont = new Font("SansSerif", Font.PLAIN, 16);
     private int padding = 20;
+
+    /**
+     * Constructor for the Popup class.
+     * 
+     * @param title       The title of the popup.
+     * @param content     The content of the popup.
+     * @param screenWidth The width of the screen.
+     * @param screenHeight The height of the screen.
+     */
 
     public Popup(String title, String content, int screenWidth, int screenHeight) {
         this.title = title;
@@ -22,17 +47,40 @@ public class Popup {
         this.bounds = new Rectangle(x, y, width, height);
     }
 
+    /**
+     * The show() method makes the popup visible.
+     * This method is called to display the popup to the user when needed.
+     */
+
     public void show() {
         visible = true;
     }
+
+    /**
+     * The hide() method makes the popup invisible.
+     * This method is called to close the popup.
+     */
 
     public void hide() {
         visible = false;
     }
 
+    /**
+     * The isVisible() method checks if the popup is currently visible.
+     * This method is used to determine if the popup should be drawn on the screen.
+     */
+
     public boolean isVisible() {
         return visible;
     }
+
+    /**
+     * The draw() method draws the popup on the given Graphics object.
+     * It uses the bounds, background color, text color, and fonts to render
+     * the popup.
+     * 
+     * @param g The Graphics object to draw on.
+     */
 
     public void draw(Graphics g) {
         if (!visible) return;

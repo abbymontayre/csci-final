@@ -1,3 +1,19 @@
+/**
+    @author Raphaelle Abby U. Montayre (243114) and Angela Kyra U. Salarda (246444)
+    @version 22 May 2025
+
+    I have not discussed the Java language code in my program
+    with anyone other than my instructor or the teaching assistants
+    assigned to this course.
+
+    I have not used Java language code obtained from another student,
+    or any other unauthorized source, either modified or unmodified.
+
+    If any Java language code or documentation used in my program
+    was obtained from another source, such as a textbook or website,
+    that has been clearly noted with a proper citation in the comments
+    of my program.
+ */
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
@@ -25,6 +41,12 @@ public class WinScreen extends JComponent {
     private int screenWidth;
     private int screenHeight;
     private int x, y;
+
+    /**
+     * Constructor for the WinScreen class.
+     * Initializes the title, subtitle, content, and endLine.
+     * Loads the end scene image from a file.
+     */
 
     public WinScreen() {
         this.screenWidth = Constants.GAME_SETTINGS.SCREEN_WIDTH;
@@ -60,13 +82,31 @@ public class WinScreen extends JComponent {
         requestFocusInWindow();
     }
 
+    /**
+     * The setVisible method sets the visibility of the WinScreen.
+     * This method is called to show or hide the WinScreen.
+     */
+
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
 
+    /**
+     * The isVisible method checks if the WinScreen is currently visible.
+     * This method is used to determine if the WinScreen should be drawn on the screen.
+     */
+
     public boolean isVisible() {
         return visible;
     }
+
+    /**
+     * The draw method draws the WinScreen on the given Graphics object.
+     * It uses the bounds, background color, text color, and fonts to render
+     * the WinScreen.
+     *
+     * @param g The Graphics object to draw on.
+     */
     
     public void draw(Graphics g) {
         if (!visible) return;
