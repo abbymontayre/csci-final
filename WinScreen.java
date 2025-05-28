@@ -8,7 +8,7 @@ import java.io.IOException;
     * This class is the WinScreen class displayed at the end of the game.
     * It displays a victory message and an image of the player.
     @author Raphaelle Abby U. Montayre (243114) and Angela Kyra U. Salarda (246444)
-    @version 22 May 2025
+    @version 23 May 2025
 
     We have not discussed the Java language code in our program
     with anyone other than our instructor or the teaching assistants

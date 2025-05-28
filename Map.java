@@ -3,7 +3,7 @@ import java.awt.*;
     * The Map class is responsible for creating the background of the game.
     * It contains the tilemap, the tile size, the wall and floor images, and the getTile method.
     @author Raphaelle Abby U. Montayre (243114) and Angela Kyra U. Salarda (246444)
-    @version 22 May 2025
+    @version 23 May 2025
 
     We have not discussed the Java language code in our program
     with anyone other than our instructor or the teaching assistants

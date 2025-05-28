@@ -2,7 +2,7 @@
  * The GameFrame class sets up the GUI for each client.
  * It prompts the user for the server IP address to ensure that the clients can connect to the correct server and port.
     @author Raphaelle Abby U. Montayre (243114) and Angela Kyra U. Salarda (246444)
-    @version 22 May 2025
+    @version 23 May 2025
 
     We have not discussed the Java language code in our program
     with anyone other than our instructor or the teaching assistants
@@ -17,7 +17,6 @@
     of our program.
  */
 import javax.swing.*;
-import java.awt.*;
 
 public class GameFrame {
     private GameCanvas gameCanvas;

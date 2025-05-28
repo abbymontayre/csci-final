@@ -5,7 +5,7 @@ import java.awt.geom.AffineTransform;
     * The Player class represents the player in the game.
     * It is an extension of the Entity class.
     @author Raphaelle Abby U. Montayre (243114) and Angela Kyra U. Salarda (246444)
-    @version 22 May 2025
+    @version 23 May 2025
 
     We have not discussed the Java language code in our program
     with anyone other than our instructor or the teaching assistants

@@ -5,7 +5,7 @@ import java.awt.geom.Rectangle2D;
     * The KeyHandler class is responsible for handling the key presses and releases of the player.
     * Utilizing the ActionMap, It binds the keys to the actions defined below.
     * @author Raphaelle Abby U. Montayre (243114) and Angela Kyra U. Salarda (246444)
-    * @version 22 May 2025
+    * @version 23 May 2025
     *
     * We have not discussed the Java language code in our program
     * with anyone other than our instructor or the teaching assistants
